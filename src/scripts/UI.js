@@ -114,13 +114,20 @@ function updateUI() {
 	ms.style.pointerEvents = showPick || showUpgrade ? "auto" : "none";
 	ms.textContent = "";
 	if (menu == 1) {
+		const stack = row();
+		stack.className = "css_row css_body";
+		const uni = line(6, "");
+		uni.appendChild(line(3, "The"));
+		uni.appendChild(line(0, "Unicorn"));
+		stack.appendChild(uni);
 		const logo = row();
 		const sub = line(6, "");
-		sub.appendChild(line(5, "The"));
+		sub.appendChild(line(5, "and the"));
 		sub.appendChild(line(1, "Foul"));
 		logo.appendChild(sub);
 		logo.appendChild(line(0, "Pattern"));
-		ms.appendChild(logo);
+		stack.appendChild(logo);
+		ms.appendChild(stack);
 	} else if (menu == 2) appendLine(1, "PAUSED");
 	else if (showPick) fillPick();
 	else if (showUpgrade) fillUpgrade();
@@ -254,7 +261,7 @@ function fillPick() {
 
 function fillUpgrade() {
 	const size = uiSize();
-	appendLine(1, "VICTORY!");
+	appendLine(1, "VICTORY");
 	appendLine(6 - portrait * 3);
 	const list = upgradeRows();
 	for (let i = 0; i < list.length; i++) {
@@ -302,12 +309,12 @@ function fillEnd() {
 		return;
 	}
 	if (battleActive) {
-		appendLine(1, battleResult == 2 ? "VICTORY!" : "DEFEAT");
+		appendLine(1, battleResult == 2 ? "VICTORY" : "DEFEAT");
 		return;
 	}
 	if (state == 2) {
 		const size = uiSize();
-		appendLine(0, "STAGE CLEAR!");
+		appendLine(0, "STAGE CLEAR");
 
 		if (isPerfect()) {
 			//const row1 = row();

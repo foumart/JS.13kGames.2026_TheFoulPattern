@@ -74,6 +74,7 @@ body {
 
 .css_title {
 	font-size: 14vmin;
+	line-height: 1;
 }
 
 .css_row {
@@ -81,6 +82,19 @@ body {
 	align-items: center;
 	justify-content: center;
 	gap: 1vmin;
+}
+
+.css_row.css_body {
+	flex-direction: column;
+}
+
+.css_body > .css_small {
+	text-align: left;
+	margin: 0 0 -3vmin;
+}
+
+.css_small > .css_subtitle {
+	margin: 0 0 -3vmin;
 }
 
 .css_chip {
