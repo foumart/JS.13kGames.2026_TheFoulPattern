@@ -13,6 +13,7 @@ let battleResult = 0; // 0 playing, 2 win, 3 lose
 let battleAim = null; // {dx, dy} first keyboard direction
 let battleTiles = []; // {x, y, kind} kind: 0 move, 1 attack
 let battleHints = []; // currently aimed
+let unicornWait = 0;
 let battleEpoch = 0; // bumped to drop stale AI timeouts
 let showPick = 0;
 let showUpgrade = 0;
@@ -61,7 +62,7 @@ function clearRock(x, y) {
 function battleEdge(ally) {
 	const w = boardWidth > boardHeight;
 	const m = (w ? boardHeight : boardWidth) / 2 | 0;
-	return w ? [ally ? 1 : boardWidth - 2, m, 0, 1] : [m - !!(ally && !(boardWidth & 1)), ally ? boardHeight - 2 : 0, 1, 0];
+	return w ? [ally ? 1 : boardWidth - 2, m, 0, 1] : [m - (ally && !(boardWidth & 1) | 0), ally ? boardHeight - 2 : 0, 1, 0];
 }
 
 function spawnBattleParty() {
@@ -253,7 +254,7 @@ function spawnEnemies() {
 	let n = queue.length;
 	const spots = [];
 	for (let y = 0; y < (e[2] ? 3 : boardHeight); y++) {
-		for (let x = e[2] ? 0 : boardWidth - 4; x < boardWidth - !e[2]; x++) {
+		for (let x = e[2] ? 0 : boardWidth - 3; x < boardWidth; x++) {
 			if (getUnitAt(x, y) || hasObstacle(x, y)) continue;
 			spots.push([x, y]);
 		}
@@ -346,12 +347,13 @@ function beginRound() {
 }
 
 function selectUnit(u) {
+	unicornWait = 0;
 	battleControl = u && u.hero && u.hp > 0 && !(u.moved && u.acted) ? u : null;
 	battleSelect = u;
 	battleAim = null;
 	battleHints = [];
 	if (battleControl) activateUnitTiles(battleControl);
-	else if (u) activateUnitTiles(u);
+	else activateUnitTiles(u);
 	updateUI();
 }
 
@@ -396,13 +398,6 @@ function battleRefreshTiles() {
 	activateUnitTiles(u);
 }
 
-function hasLiveTile(kind) {
-	for (const r of battleTiles) {
-		if (r.live && (kind == null || r.kind == kind)) return 1;
-	}
-	return 0;
-}
-
 function getTileAt(x, y) {
 	for (let i = 0; i < battleTiles.length; i++) {
 		if (battleTiles[i].x == x && battleTiles[i].y == y && battleTiles[i].live) return battleTiles[i];
@@ -434,18 +429,20 @@ function nextRoundPhase() {
 }
 
 function playerMove(u, x, y) {
-	performMove(u, x, y, () => {
-		battleAim = null;
-		battleHints = [];
-		if (u.acted) {
-			battleFinishUnit(u);
-			return;
-		}
-		battleRefreshTiles();
-		const hits = u.hits(u.x, u.y);
-		if (!hits.length) battleFinishUnit(u);
-		else if (u.around) playerAttack(u, hits[0].x, hits[0].y);
-	});
+	performMove(u, x, y, () => afterHeroMove(u));
+}
+
+function afterHeroMove(u) {
+	battleAim = null;
+	battleHints = [];
+	if (u.acted) {
+		battleFinishUnit(u);
+		return;
+	}
+	battleRefreshTiles();
+	const hits = u.hits(u.x, u.y);
+	if (!hits.length) battleFinishUnit(u);
+	else if (u.around) playerAttack(u, hits[0].x, hits[0].y);
 }
 
 function playerAttack(u, x, y) {
@@ -638,42 +635,37 @@ function battleClick(event) {
 	swipe = event;
 }
 
-function battleTap(event) {
-	if (!battleActive || battleResult || animating) return;
-	const cell = getPosFromEvent(event);
+function battleTap(e) {
+	if (!battleActive || battleResult || animating || battlePhase || thinking) return;
+	const cell = getPosFromEvent(e);
 	if (!cell) return;
 	const occ = getUnitAt(cell.x, cell.y);
-
-	if (!battlePhase && !thinking && occ && !occ.enemy) {
-		if (occ.hero && !(occ.moved && occ.acted)) selectUnit(occ);
-		else {
-			battleSelect = occ;
-			activateUnitTiles(occ);
-			updateUI();
-		}
+	const u = battleControl;
+	if (unicornWait && occ == u) {
+		unicornWait = 0;
+		u.moved = 1;
+		afterHeroMove(u);
 		return;
 	}
-
-	if (occ) {
-		if (!battlePhase && !thinking && battleControl && battleSelect == battleControl && !battleControl.acted) {
-			if (battleControl.actHits(occ.x, occ.y).length) {
-				playerAttack(battleControl, occ.x, occ.y);
-				return;
-			}
-		}
-		battleSelect = occ;
-		activateUnitTiles(occ);
+	if (occ && occ.hero && battleSelect == occ && !occ.moved) {
+		unicornWait = 1;
+		battleTiles = [{x: occ.x, y: occ.y, kind: 0, live: 1}];
+		battleHints = [];
+		battleAim = 0;
 		updateUI();
 		return;
 	}
-
-	if (!battlePhase && !thinking) {
-		const tile = getTileAt(cell.x, cell.y);
-		if (tile && battleControl && !(battleControl.moved && battleControl.acted)) {
-			if (tile.kind == 0 && !battleControl.moved) playerMove(battleControl, cell.x, cell.y);
-			else if (tile.kind == 1 && !battleControl.acted) playerAttack(battleControl, cell.x, cell.y);
-		}
+	if (occ) {
+		if (u && battleSelect == u && !u.acted && occ.enemy && u.actHits(occ.x, occ.y).length)
+			playerAttack(u, occ.x, occ.y);
+		else selectUnit(occ);
+		return;
 	}
+	const tile = getTileAt(cell.x, cell.y);
+	if (tile && u && !(u.moved && u.acted)) {
+		if (!tile.kind && !u.moved) playerMove(u, cell.x, cell.y);
+		else if (tile.kind && !u.acted) playerAttack(u, cell.x, cell.y);
+	} else if (battleSelect) selectUnit();
 }
 
 function battleKey(event) {

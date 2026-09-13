@@ -83,7 +83,7 @@ const UNITS = [
 ];
 const ENEMIES = [
 	["Manticore",28,8, 3, 1, 1, "cd6", 143, 16],
-	["Brand",    32,9, 3, 3, 7, "b16", 166, 21]
+	["Brand",    32,9, 3, 3, 6, "716", 166, 21]
 ];
 
 // A boss plus the two lesser foes are encoded like: kind * 10 + lvl
@@ -867,7 +867,7 @@ function drawBoard() {
 		if (battleSelect && battleSelect != battleControl && battleSelect.hp > 0) {
 			outlineUnit(battleSelect, size, battleSelect.enemy ? "#f89" : "#fe6", 0.05, 2);
 		}
-	} else if (menu != 1) drawFlowingPath();
+	} else if (menu != 1) drawFlowingPath(); 
 
 	for (let y = 0; y < boardHeight; y++) {
 		if (battleActive) {

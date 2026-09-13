@@ -228,19 +228,18 @@ function fillBrief() {
 
 function fillPick() {
 	const n = rescuedUnits.length;
-	const cols = portrait && n > 5 ? n + 1 >> 1 : n;
-	const size = Math.min(width, height) / (cols < 5 ? 6 : cols + 2) | 0;
+	const size = Math.min(width, height) / (n < 5 ? 6 : n > 5 ? 7 : n + 2) | 0;
 	const need = Math.min(2, n);
 	printProgress();
 	if (portrait) appendLine(4);
 	appendLine(5 - portrait, need > 2 ? "Pick 2 allies" : "Your all" + (need == 2 ? "ies" : "y"));
 	appendLine(6);
-	let pickRow = row();
+	const pickRow = row();
+	if (n > 5) {
+		pickRow.style.flexWrap = "wrap";
+		pickRow.style.maxWidth = width * .85 + "px";
+	}
 	for (let i = 0; i < n; i++) {
-		if (i == cols) {
-			ms.appendChild(pickRow);
-			pickRow = row();
-		}
 		const bmp = rescuedUnits[i];
 		const wrap = row();
 		wrap.className = "css_row css_chip" + (battleParty.indexOf(bmp) >= 0 ? " css_muted" : " css_idle") + (i == pickCursor ? " css_focused" : "");
