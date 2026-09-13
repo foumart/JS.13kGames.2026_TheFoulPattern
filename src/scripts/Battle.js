@@ -62,7 +62,7 @@ function clearRock(x, y) {
 function battleEdge(ally) {
 	const w = boardWidth > boardHeight;
 	const m = (w ? boardHeight : boardWidth) / 2 | 0;
-	return w ? [ally ? 1 : boardWidth - 2, m, 0, 1] : [m - (ally && !(boardWidth & 1) | 0), ally ? boardHeight - 2 : 0, 1, 0];
+	return w ? [ally ? 1 : boardWidth - 2, m, 0, 1] : [m - (ally ? !(boardWidth & 1) : 0), ally ? boardHeight - 2 : 0, 1, 0];
 }
 
 function spawnBattleParty() {
