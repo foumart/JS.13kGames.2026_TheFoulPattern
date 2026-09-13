@@ -75,7 +75,7 @@ function updateUI() {
 		//L.appendChild(line(3, "js13k game by Noncho Savov"));
 		//L.appendChild(line(3, "by Noncho Savov"));
 		//R.textContent = "";
-		R.textContent = "v{VERSION}";
+		R.textContent = "Hi-score: " + hiscore;
 		//R.appendChild(line(4, "Arrows - move"));
 		//R.appendChild(line(4, "Space - select"));
 		//R.appendChild(line(4, "Enter - confirm"));
@@ -91,7 +91,7 @@ function updateUI() {
 				L.appendChild(playerCard(size));
 			}
 		}
-		R.textContent = puzzleMode ? "Stage " + (levelIndex + 1) : "World " + worldNumber() + "-" + shadowNumber();
+		R.textContent = puzzleMode ? "Hi-score: " + hiscore : "World " + worldNumber() + "-" + shadowNumber();
 		if (!puzzleMode) R.appendChild(document.createElement("hr"));
 		if (battleResult == 2) R.appendChild(line(4, "Vail cleared!"));
 		if (battleActive && !battleResult || showPick) {
@@ -298,14 +298,10 @@ function fillUpgrade() {
 }
 
 function fillEnd() {
-	if (!lives) {
-		appendLine(1, "GAME OVER");
+	if (!lives || runComplete()) {
+		appendLine(1, lives ? "GAME COMPLETE" : "GAME OVER");
 		appendLine(2, "SCORE " + currentScore());
-		return;
-	}
-	if (runComplete()) {
-		appendLine(1, "GAME COMPLETE");
-		appendLine(2, "SCORE " + currentScore());
+		appendLine(2, "Hi-score: " + hiscore);
 		return;
 	}
 	if (battleActive) {

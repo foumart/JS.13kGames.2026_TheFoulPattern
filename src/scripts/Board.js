@@ -36,6 +36,7 @@ let moving = 0;
 let gameLoop;
 let time = 0;
 let pathCount = 0;
+let hiscore = 0;
 let lives = 3;
 let puzzleMode = 0;
 let menu = 1; // 1 title, 2 pause
@@ -603,6 +604,7 @@ function scheduleEndScreen() {
 			scoreBanked = 1;
 			if (isPerfect()) perfects ++;
 		}
+		hiscore = Math.max(hiscore, currentScore());
 
 		showEnd = 1;
 		endBtnCur = 1; // start on NEXT; clamps back to RETRY when it is the only one
