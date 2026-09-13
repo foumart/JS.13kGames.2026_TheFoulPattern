@@ -35,7 +35,7 @@ function createUnitStatsText(unit, size = 5, sep = "\n") {
 	const txt = line(size);
 	txt.style.whiteSpace = "pre";
 	txt.textContent = "HP: " + hp + unit.hpMax + sep + "Dmg: " + unit.dmg
-		+ sep + "Move: " + unit.mvMax + cap(unit.mvMax, unit.range)
+		+ sep + "Mov: " + unit.mvMax + cap(unit.mvMax, unit.range)
 		+ sep + "Att: " + unit.atkMax + cap(unit.atkMax, unit.reach);
 	return txt;
 }
@@ -113,7 +113,7 @@ function updateUI() {
 	// overlay
 	ms.style.pointerEvents = showPick || showUpgrade ? "auto" : "none";
 	ms.textContent = "";
-	ms.className = menu == 1 || showObjective || showEnd && state == 2 && !battleActive && !runComplete() ? "css_georgia" : "";
+	ms.className = menu == 1 || showObjective || showPick || showEnd && state == 2 && !battleActive && !runComplete() ? "css_georgia" : "";
 	if (menu == 1) {
 		const stack = row();
 		stack.className = "css_row css_body";

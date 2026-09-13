@@ -1,12 +1,12 @@
 body {
 	overflow: hidden;
 	color: #fff;
-	font: 900 4vmin Arial, sans-serif;
+	font: 900 4vmin Arial;
 	text-align: center;
 }
 
 .css_georgia {
-	font-family: Georgia, serif;
+	font-family: Georgia;
 }
 
 #md, #gc, #ui, #ov {
