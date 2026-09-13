@@ -1,9 +1,12 @@
 body {
 	overflow: hidden;
 	color: #fff;
-	/*background: #000;*/
-	font: 900 4vmin system-ui;
+	font: 900 4vmin Arial, sans-serif;
 	text-align: center;
+}
+
+.css_georgia {
+	font-family: Georgia, serif;
 }
 
 #md, #gc, #ui, #ov {
@@ -53,7 +56,7 @@ body {
 }
 
 .css_small .css_caption {
-	margin: 3vmin 0 -3vmin;
+	margin: 1vmin 0 -1vmin;
 }
 
 .css_caption {
@@ -74,7 +77,6 @@ body {
 
 .css_title {
 	font-size: 14vmin;
-	line-height: 1;
 }
 
 .css_row {
@@ -94,7 +96,7 @@ body {
 }
 
 .css_small > .css_subtitle {
-	margin: 0 0 -3vmin;
+	margin: 0 0 -2vmin;
 }
 
 .css_chip {

@@ -391,7 +391,7 @@ async function mangle() {
 				'css_title', 'css_caption', 'css_body', 'css_subtitle',
 				'css_headline', 'css_display', 'css_small', 'css_tiny',
 				'css_row', 'css_chip', 'css_picked', 'css_focused', 'css_idle',
-				'css_frame', 'css_muted'
+				'css_frame', 'css_muted', 'css_georgia'
 			];
 			for (let i = 0; i < classIds.length; i++) {
 				const regex = new RegExp(classIds[i], 'g');

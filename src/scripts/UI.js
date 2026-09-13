@@ -113,6 +113,7 @@ function updateUI() {
 	// overlay
 	ms.style.pointerEvents = showPick || showUpgrade ? "auto" : "none";
 	ms.textContent = "";
+	ms.className = menu == 1 || showObjective || showEnd && state == 2 && !battleActive && !runComplete() ? "css_georgia" : "";
 	if (menu == 1) {
 		const stack = row();
 		stack.className = "css_row css_body";
@@ -314,16 +315,11 @@ function fillEnd() {
 	}
 	if (state == 2) {
 		const size = uiSize();
-		appendLine(0, "STAGE CLEAR");
+		appendLine(0, "Stage Clear");
 
 		if (isPerfect()) {
-			//const row1 = row();
 			appendLine(6 - portrait * 5);
 			appendLine(1, "Perfect!");
-			//appendLine(3, "Bonus: 100");
-			//row1.appendChild(createSparkAnim(size));
-			//row1.appendChild(line(1, "+1"));
-			//ms.appendChild(row1);
 		}
 
 		const row3 = line(3, "");
@@ -354,10 +350,7 @@ function fillEnd() {
 			ms.appendChild(row3);
 			row3.appendChild(line(3, "enter the Vail"));
 		}
-	}/* else {
-		appendLine(2, "STUCK - R");
-		appendLine(2, "SCORE " + currentScore() + "  MOVES " + moveCount);
-	}*/
+	}
 }
 
 let endBtnCur = 0;
