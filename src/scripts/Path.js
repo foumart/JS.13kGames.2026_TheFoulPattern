@@ -167,7 +167,7 @@ function scrollRainbow() {
 	const t = (time - rainbowStart) / 1000;
 	if (t >= 1) {
 		paintRainbow(0);
-		if (rainbowDone > 1 || state == 2 || menu == 1) {
+		if (rainbowDone > 1 || state == 2) {
 			rainbowDone = 1;
 			rainbowStart = time;
 		} else rainbowAnim = 0;

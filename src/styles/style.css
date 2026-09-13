@@ -43,21 +43,17 @@ body {
 	z-index: 0;
 }
 
-/*#ms > canvas {
-	position: absolute;
-	z-index: -1;
-	top: 40%;
-	left: -13%;
-	width: 125%;
-	translate: 0 -50%;
-}*/
-
 .css_tiny {
 	font-size: 1vmin;
 }
 
 .css_small {
 	font-size: 2vmin;
+	text-align: right;
+}
+
+.css_small .css_caption {
+	margin: 3vmin 0 -3vmin;
 }
 
 .css_caption {

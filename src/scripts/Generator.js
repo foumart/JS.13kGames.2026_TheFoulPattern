@@ -75,7 +75,7 @@ function makeRandomLevel(stage) {
 		for (let n = want * 30, left = want; n -- && left;) {
 			if (plant(1 + RNG(width - 2), 1 + RNG(height - 2), 1)) left --;
 		}
-		let blockTiles = menu == 1 ? 0 : 2 + RNG(3) + ((area - 56) / 24 | 0) + (progress / 9 | 0);
+		let blockTiles = 2 + RNG(3) + ((area - 56) / 24 | 0) + (progress / 9 | 0);
 		for (let n = blockTiles * 8; n -- && blockTiles;) {
 			const rim = progress < 5 || RNG(2);
 			const e = RNG(4);
@@ -215,7 +215,7 @@ function makeRandomLevel(stage) {
 	const enemies = [];
 	for (let i = holes.length; i --;) {
 		const cells = holes[i];
-		let rock = menu != 1 && (cells.length > 3 || enemies.length + cells.length > want);
+		let rock = cells.length > 3 || enemies.length + cells.length > want;
 		let beside = 0;
 		for (let j = cells.length; j --;) {
 			if (seed[cells[j]] == 2) rock = 1;

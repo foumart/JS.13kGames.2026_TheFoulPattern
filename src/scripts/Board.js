@@ -284,17 +284,8 @@ function initBoard() {
 	}
 
 	player = new Player(startX, startY);
-	placeStartPath(startX, startY);
+	if (menu != 1) placeStartPath(startX, startY);
 	buildRainbowBackdrop();
-	if (menu == 1) {
-		for (let y = boardHeight; y--;) {
-			for (let x = boardWidth; x--;) {
-				fillData[y][x] = 1;
-				enemies[y][x] = coins[y][x] = exits[y][x] = rescues[y][x] = 0;
-			}
-		}
-		pathTrail = [];
-	}
 }
 
 function isPassable(x, y, dx, dy) {
@@ -782,7 +773,7 @@ function fitBoard() {
 	let zoom = Math.min(width / Math.max(fitW, 6), height / Math.max(fitH, 6)) * dpr / crtTile;
 	if (title) zoom = Math.max(.5, Math.min(6 * dpr, zoom));
 	else zoom = Math.max(1, Math.min(6 * dpr, zoom | 0));
-	const pad = 2;
+	const pad = 2 + title * 2;
 	const canvasW = Math.max(boardWidth + pad, width * dpr / zoom / crtTile + !title | 0) * crtTile;
 	const canvasH = Math.max(boardHeight + pad, height * dpr / zoom / crtTile + !title | 0) * crtTile;
 	if (gc.width - canvasW | gc.height - canvasH) {
@@ -811,7 +802,7 @@ function fitBoard() {
 
 function drawBoard() {
 	if (!battleActive) {
-		rainbowPulse = anyDying() || state == 2 || menu == 1;
+		rainbowPulse = anyDying() || state == 2;
 		scrollRainbow();
 	}
 	const size = fitBoard();
@@ -871,7 +862,7 @@ function drawBoard() {
 		}
 	} else if (menu != 1) drawFlowingPath();
 
-	if (menu != 1) for (let y = 0; y < boardHeight; y++) {
+	for (let y = 0; y < boardHeight; y++) {
 		if (battleActive) {
 			for (let i = 0; i < battleUnits.length; i++) {
 				const u = battleUnits[i];
