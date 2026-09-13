@@ -219,6 +219,7 @@ function makeRandomLevel(stage) {
 	// Pockets of 3 or less spawn leprechauns, the rest turn to blocks.
 	// Tiles touching the exit turn to blocks too.
 	const enemies = [];
+	let far = 0;
 	for (let i = holes.length; i --;) {
 		const cells = holes[i];
 		let rock = cells.length > 3 || enemies.length + cells.length > want;
@@ -231,26 +232,27 @@ function makeRandomLevel(stage) {
 			const x = cells[j] % width;
 			const y = cells[j] / width | 0;
 	grid[y][x] = rock ? (cells.length == 1 && !RNG(4) ? 0 : 3) : beside ? 0 : 1;
-			if (!rock && !beside) enemies.push([x, y]);
+			if (!rock && !beside) {
+				enemies.push([x, y]);
+				far |= Math.abs(x - from % width) + Math.abs(y - (from / width | 0)) > 1;
+			}
 		}
 	}
 
-	if (progress > 2 && enemies.length < area / 11) return makeRandomLevel(stage);
+	if (!(hasRescue(progress) ? enemies.length : far) || progress > 2 && enemies.length < area / 11)
+		return makeRandomLevel(stage);
 
 	// start / end
 	grid[from / width | 0][from % width] = 2;
 	grid[to / width | 0][to % width] = 8;
 
-	// gold (4) on the trail; silver (5) off-trail, or on the trail if nowhere else
+	// gold coins on the trail
 	const loot = 1 + (progress > 2 && 1 + (progress > 8 && RNG(2)));
-	const pool = [[], []];
-	for (let k = area; k--;) if (!grid[k / width | 0][k % width]) pool[path[k]|0].push(k);
-	for (let kind = 4; kind < 6; kind++) {
-		const list = pool[kind < 5 || !pool[0].length ? 1 : 0];
-		for (let n = loot, i = list.length; n && i; n--) {
-			const k = list.splice(RNG(i--), 1)[0];
-			grid[k / width | 0][k % width] = kind;
-		}
+	const pool = [];
+	for (let k = area; k--;) if (!grid[k / width | 0][k % width] && path[k]) pool.push(k);
+	for (let n = loot, i = pool.length; n && i; n--) {
+		const k = pool.splice(RNG(i--), 1)[0];
+		grid[k / width | 0][k % width] = 4;
 	}
 
 	if (hasRescue(progress) && progress % 9 != 8 && enemies.length) {

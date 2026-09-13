@@ -16,7 +16,7 @@ function encodeBitmap(group, dest) {
 			const z = enc.charCodeAt(i);
 			px.push(z & 3, (z >> 2) & 3, (z >> 4) & 3);
 		}
-		const pal = group[k + 1] || "";
+		const pal = group[k + 1];
 		const palW = 3;
 		dest.push(drawPalettedBitmap([px, bank, pal, palW], pal.substr(0, palW)));
 	}
@@ -66,7 +66,7 @@ const objectsData = [
 	"012", // right
 	"012", // down
 	"012", // left
-	"125345", // coin gold / silver
+	"125", // coin
 	"`BXIXJhJlNpC@BpC^I\\m`C@B@@Lp`IPE`ILpCLBLAHBDCHCLp@|CsLp@p@@@@C@L|?@L@C@@@@p@p@sL|Cp@p@L@?OL@p@@@H@fHkfXzlOp@"
 ];
 
@@ -122,7 +122,7 @@ function drawPalettedBitmap(src, ref) {
 
 function drawPaletted(src, i, dx, dy, dw, dh, ctx) {
 	const w = src[3] || 3;
-	const ref = typeof i == "string" ? i : src[2].substr((i || 0) * w, w) || "012";
+	const ref = i.length ? i : src[2].substr((i || 0) * w, w);
 	const bmp = drawPalettedBitmap(src, ref);
 	ctx.drawImage(bmp, 0, 0, bmp.width, bmp.height, dx, dy, dw, dh);
 }

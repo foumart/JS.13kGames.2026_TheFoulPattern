@@ -24,7 +24,7 @@ let scanHPattern;
 
 let enemies = []; // 0 empty, 1 blue, 2 green, 3 red, 4-6 dying
 let obstacles = [];
-let coins = []; // 1 gold, 2 silver
+let coins = [];
 let exits = [];
 let rescues = []; // 0 empty, else unit bitmap index
 let pathData = [];
@@ -250,7 +250,7 @@ function initBoard() {
 			const c = levelData[y][x];
 			enemies[y][x] = c == 1 ? 1 + (levelIndex > 3 && RNG(2 + (levelIndex / 18 | 0))) : 0;
 			obstacles[y][x] = c == 3 ? 1 : 0;
-			coins[y][x] = c == 4 ? 1 : c == 5 ? 2 : 0;
+			coins[y][x] = +(c == 4);
 			exits[y][x] = c == 8 ? 1 : 0;
 			rescues[y][x] = 0;
 			if (c == 9 && !puzzleMode) {
@@ -278,7 +278,6 @@ function initBoard() {
 	if (!stageCaptive) {
 		const spots = [];
 		for (let y = 0; y < boardHeight; y++) {
-			// spawn jewel away from the unicorn
 			for (let x = 0; x < boardWidth; x++) {
 				if (enemies[y][x] && Math.abs(x - startX) + Math.abs(y - startY) > 1) spots.push([x, y]);
 			}
@@ -475,8 +474,8 @@ function restoreFlushed(flushed) {
 			const k = rescuedUnits.indexOf(bmp);
 			if (k >= 0) rescuedUnits.splice(k, 1);
 		} else if (flushed[i][3] < 0) {
-			coins[y][x] = -flushed[i][3];
-			coinsCollected -= coins[y][x] == 1 ? 5 : 1;
+			coins[y][x] = 1;
+			coinsCollected -= 5;
 		} else {
 			enemies[y][x] = flushed[i][3] || 1;
 			enemiesCleared --;
@@ -485,12 +484,11 @@ function restoreFlushed(flushed) {
 }
 
 function collectCoin(x, y) {
-	const kind = coins[y][x];
-	if (!kind) return 0;
+	if (!coins[y][x]) return 0;
 	coins[y][x] = 0;
-	coinsCollected += kind == 1 ? 5 : 1;
+	coinsCollected += 5;
 	sfx("QX");
-	return [x, y, 0, -kind];
+	return [x, y, 0, -1];
 }
 
 function getCurrentContext() {
@@ -850,7 +848,7 @@ function drawBoard() {
 			} else if (coins[gy][gx]) {
 				if (!puzzleMoveAt(gx, gy) || isPrevPath(gx, gy) || (time / 1000 | 0) % 3) {
 					const cs = size * 2 / 3;
-					drawPaletted(objectBitmaps[8], coins[gy][gx] - 1,
+					drawPaletted(objectBitmaps[8], 0,
 						px + (size - cs) / 2, py + size - cs, cs, cs, gameContext);
 				}
 			}
