@@ -16,20 +16,20 @@ function getLevelData(stage) {
 	return generatedLevels[stage] || (generatedLevels[stage] = makeRandomLevel(stage));
 }
 
-/*for (let progress = 1; progress < 64; progress++) {
-    const grow = progress / 9 | 0;
-    let width = progress < 3 ? 6 : 7 + (progress > 7 ? 1 : 0) + (grow / 2 | 0);
-    let height = progress < 7 ? 5 : ((progress % 3 == 0) ? 7 : 6) + (grow / 2 | 0);
-    console.log("level", progress, ":", width, "x", height, (progress % 3 == 0 ? "-" : ""));
-    if (progress % 9 == 0) console.log("world", progress / 9, "battle")
+/*for (let stage = 0; stage < 63; stage++) {
+    const world = stage / 9 | 0, slot = stage % 9, battle = slot % 3 == 2;
+    let width = world ? 8 + world - (world > 3) + (slot > 1) + (slot > 5) : stage < 2 ? 6 : 7 + (stage > 6);
+    let height = world ? (world > 3 ? 10 : 8) - battle : stage < 6 ? 5 : 6 - battle;
+    console.log("level", stage + 1, ":", width, "x", height, (battle ? "-" : ""));
+    if (slot == 8) console.log("world", world + 1, "battle")
 }*/
 
 // the trail the generator walks is the solution - pockets are filled with enemies
 function makeRandomLevel(stage) {
 	const progress = stage;
-	const grow = progress / 9 | 0;
-	let width = progress < 3 ? 6 : 7 + (progress > 7 ? 1 : 0) + grow / 2 | 0;
-	let height = progress < 7 ? 5 : 5 + grow / 2 | 0;
+	const world = stage / 9 | 0, slot = stage % 9, battle = slot % 3 == 2;
+	let width = world ? 8 + world - (world > 3) + (slot > 1) + (slot > 5) : stage < 2 ? 6 : 7 + (stage > 6);
+	let height = world ? (world > 3 ? 10 : 8) - battle : stage < 6 ? 5 : 6 - battle;
 
 	if (menu == 1) {
 		const s = titleWH();
@@ -41,7 +41,7 @@ function makeRandomLevel(stage) {
 			width = height;
 			height = swap;
 		}
-		portrait ? width = Math.min(9, width) : height = Math.min(9, height);
+		portrait ? width = Math.min(10, width) : height = Math.min(10, height);
 	}
 
 	const area = width * height;
