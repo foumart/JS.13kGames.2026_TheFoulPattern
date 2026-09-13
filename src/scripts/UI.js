@@ -227,14 +227,20 @@ function fillBrief() {
 }
 
 function fillPick() {
-	const size = Math.min(width, height) / (rescuedUnits.length < 5 ? 6 : rescuedUnits.length + 2) | 0;
-	const need = Math.min(2, rescuedUnits.length);
+	const n = rescuedUnits.length;
+	const cols = portrait && n > 5 ? n + 1 >> 1 : n;
+	const size = Math.min(width, height) / (cols < 5 ? 6 : cols + 2) | 0;
+	const need = Math.min(2, n);
 	printProgress();
 	if (portrait) appendLine(4);
 	appendLine(5 - portrait, need > 2 ? "Pick 2 allies" : "Your all" + (need == 2 ? "ies" : "y"));
 	appendLine(6);
-	const pickRow = row();
-	for (let i = 0; i < rescuedUnits.length; i++) {
+	let pickRow = row();
+	for (let i = 0; i < n; i++) {
+		if (i == cols) {
+			ms.appendChild(pickRow);
+			pickRow = row();
+		}
 		const bmp = rescuedUnits[i];
 		const wrap = row();
 		wrap.className = "css_row css_chip" + (battleParty.indexOf(bmp) >= 0 ? " css_muted" : " css_idle") + (i == pickCursor ? " css_focused" : "");
@@ -251,13 +257,7 @@ function fillPick() {
 	appendLine(2, unit.name);
 	appendLine(4, "Level: " + (upgradeLvl(unit) + 1));
 	if (portrait) ms.appendChild(document.createElement("hr"));
-	//appendLine(6);
 	ms.appendChild(createUnitStatsText(unit, 3, portrait ? " \n" : " \xa0 "));
-	//const n = ["Rook", "Bishop", "Queen", "Knight", "Around"];
-	//appendLine(3, "Move: " + n[unit.mv] + " / Attack: " + (unit.around ? n[4] : n[unit.atk]));
-	//appendLine(4);
-	//appendLine(4, "Legend:");
-	//appendLine(4, "R: Rook, B: Bishop, Q: Queen, K: Knight");
 }
 
 function fillUpgrade() {
