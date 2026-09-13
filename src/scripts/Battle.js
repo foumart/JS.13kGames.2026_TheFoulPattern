@@ -535,8 +535,8 @@ function performAttack(u, hits, done) {
 	updateUI();
 	const t = hits[0];
 	poke(u, t ? t.x : u.x, t ? t.y : u.y, () => {
-		sfx("SG"); // attack
-		for (let i = 0; i < hits.length; i++) if ((hits[i].hp -= u.dmg) <= 0) sfx("MGA"); // destroy
+		sfx(u.enemy ? "C80" : "SG"); // hurt vs attack
+		for (let i = 0; i < hits.length; i++) if ((hits[i].hp -= u.dmg) <= 0) sfx(u.enemy ? "MA6-" : "MGA"); // fall vs destroy
 		if (!u.enemy) {
 			const mul = u.hero ? 2 : 1;
 			for (let i = 0; i < hits.length; i++) {

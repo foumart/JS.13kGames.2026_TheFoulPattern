@@ -349,14 +349,6 @@ function waitDelay(callback, frames = 30) {
 	tween({}, frames, {}, callback);
 }
 
-function hasMove() {
-	return canRetract()
-		|| isPassable(player.x + 1, player.y, 1, 0)
-		|| isPassable(player.x - 1, player.y, -1, 0)
-		|| isPassable(player.x, player.y + 1, 0, 1)
-		|| isPassable(player.x, player.y - 1, 0, -1);
-}
-
 function reviveDyingEnemies() {
 	for (let y = 0; y < boardHeight; y++) {
 		for (let x = 0; x < boardWidth; x++) {
@@ -445,6 +437,7 @@ function markClusterDying(cluster, ahead) {
 
 function flushDyingEnemies() {
 	const flushed = [];
+	let n = 0;
 	for (let y = 0; y < boardHeight; y++) {
 		for (let x = 0; x < boardWidth; x++) {
 			if (leprechaunDying(enemies[y][x])) {
@@ -453,12 +446,13 @@ function flushDyingEnemies() {
 				fillData[y][x] = 1;
 				enemiesCleared ++;
 				flushed.push([x, y, 0, kind]);
+				n = 1;
 			}
 			const rescued = collectRescue(x, y);
 			if (rescued) flushed.push(rescued);
 		}
 	}
-	if (flushed.length) sfx("7<C");// capture enemy
+	if (n) sfx("7<C");// capture enemy
 	return flushed;
 }
 
@@ -555,10 +549,8 @@ function collectRescue(x, y) {
 	rescues[y][x] = 0;
 	rescueDying[y][x] = 0;
 	fillData[y][x] = 1;
-	if (k != 1) {
-		if (rescuedUnits.indexOf(k) < 0) rescuedUnits.push(k);
-		//"IM");
-	}
+	sfx(k == 1 ? "AEKSX" : "ACG"); // jewel vs hero
+	if (k != 1 && rescuedUnits.indexOf(k) < 0) rescuedUnits.push(k);
 	return [x, y, k];
 }
 
@@ -603,7 +595,7 @@ function calcLevelScore() {
 }
 
 function scheduleEndScreen() {
-	sfx(state == 2 ? "IMQX" : "QMIE");
+	sfx(state == 2 ? "ACGPU" : "QMIE");//"IMIPU"
 	waitDelay(()=> {
 		calcLevelScore();
 		if (state == 2 && !scoreBanked) {
@@ -649,30 +641,11 @@ function checkCaptures(flushAcc) {
 	}
 
 	if (exits[player.y][player.x] && !remainingRescue()) {
-		if (flushAcc) {
-			const extra = flushDyingEnemies();
-			for (let i = 0; i < extra.length; i++) flushAcc.push(extra[i]);
-		} else {
-			flushDyingEnemies();
-		}
+		const extra = flushDyingEnemies();
+		if (flushAcc) for (let i = 0; i < extra.length; i++) flushAcc.push(extra[i]);
 		countEnemiesLeft();
 		revealPlayerTile = 1;
 		state = 2;
-		scheduleEndScreen();
-		return;
-	}
-
-	if (!hasMove()) {
-		if (flushAcc) {
-			const extra = flushDyingEnemies();
-			for (let i = 0; i < extra.length; i++) flushAcc.push(extra[i]);
-		} else if (!canRetract()) {
-			flushDyingEnemies();
-		}
-	}
-
-	if (!hasMove()) {
-		state = 3;
 		scheduleEndScreen();
 	}
 }
@@ -831,7 +804,7 @@ function drawBoard() {
 			}
 			const onPlayer = gx == player.x && gy == player.y;
 			let tipOnly = 0;
-			if (onPlayer && pathStep[gy][gx] && !revealPlayerTile && !(showEnd && state == 3)) {
+			if (onPlayer && pathStep[gy][gx] && !revealPlayerTile) {
 				let visits = 0;
 				for (let i = 0; i < pathTrail.length; i++) {
 					if (pathTrail[i][0] == gx && pathTrail[i][1] == gy) visits ++;

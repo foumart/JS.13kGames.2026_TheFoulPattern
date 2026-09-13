@@ -54,14 +54,14 @@ class Player {
 		const ox = this.x;
 		const oy = this.y;
 		beginRetractPath();
-		sfx("987", 0.005); // step back
+		sfx(")0", 0.03); // step back
 		this.x += dx;
 		this.y += dy;
 		this.offsetX = -dx;
 		this.offsetY = -dy;
 		moving = 1;
 		tween(this, 6, {offsetX: 0, offsetY: 0}, () => {
-			sfx("0", 0.02);
+			//sfx("0", 0.02);
 			moveCount ++;
 			restoreFlushed(moveLog.pop() || []);
 			reviveDyingEnemies();
