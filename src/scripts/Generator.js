@@ -27,9 +27,15 @@ function getLevelData(stage) {
 // the trail the generator walks is the solution - pockets are filled with enemies
 function makeRandomLevel(stage) {
 	const progress = stage;
-	const world = stage / 9 | 0, slot = stage % 9, battle = slot % 3 == 2;
-	let width = world ? 8 + world - (world > 3) + (slot > 1) + (slot > 5) : stage < 2 ? 6 : 7 + (stage > 6);
-	let height = world ? (world > 3 ? 10 : 8) - battle : stage < 6 ? 5 : 6 - battle;
+	let width, height;
+	if (puzzleMode) {
+		width = Math.min(16, 6 + ((stage + 1) / 9 | 0));
+		height = Math.min(10, 5 + ((stage + 1) / 18 | 0));
+	} else {
+		const world = stage / 9 | 0, slot = stage % 9, battle = slot % 3 == 2;
+		width = world ? 8 + world - (world > 3) + (slot > 1) + (slot > 5) : stage < 2 ? 6 : 7 + (stage > 6);
+		height = world ? (world > 3 ? 10 : 8) - battle : stage < 6 ? 5 : 6 - battle;
+	}
 
 	if (menu == 1) {
 		const s = titleWH();

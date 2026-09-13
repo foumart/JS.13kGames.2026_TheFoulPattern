@@ -2,6 +2,15 @@ const tileWidth = 6;
 const cellSize = 18;
 const unitScale = 2 / 3;
 const campaignLength = 63;
+const puzzleLength = 100;
+
+function lastIndex() {
+	return (puzzleMode ? puzzleLength : campaignLength) - 1;
+}
+
+function runComplete() {
+	return levelIndex >= lastIndex() && (puzzleMode ? state == 2 : battleResult == 2);
+}
 
 let boardWidth;
 let boardHeight;
@@ -686,7 +695,7 @@ function nextLevel() {
 	leftUnitsThisLevel = [0, 0, 0, 0, 0];
 	if (!puzzleMode && levelIndex % 3 == 2) {
 		startBattle();
-	} else if (puzzleMode || levelIndex < campaignLength - 1) {
+	} else if (levelIndex < lastIndex()) {
 		levelIndex ++;
 		resetLevel();
 	} else restartCampaign();

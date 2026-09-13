@@ -296,11 +296,13 @@ function fillEnd() {
 		appendLine(2, "SCORE " + currentScore());
 		return;
 	}
+	if (runComplete()) {
+		appendLine(1, "GAME COMPLETE");
+		appendLine(2, "SCORE " + currentScore());
+		return;
+	}
 	if (battleActive) {
-		if (battleResult == 2 && levelIndex >= campaignLength - 1) {
-			appendLine(1, "GAME COMPLETE");
-			appendLine(2, "SCORE " + currentScore());
-		} else appendLine(1, battleResult == 2 ? "VICTORY!" : "DEFEAT");
+		appendLine(1, battleResult == 2 ? "VICTORY!" : "DEFEAT");
 		return;
 	}
 	if (state == 2) {
@@ -375,7 +377,7 @@ function updateButtons() {
 		btn(Y);
 		btn(N, "Play", showPick ? confirmParty : dismissObjective,
 			!showPick || battleParty.length >= Math.min(2, rescuedUnits.length));
-	} else if (battleResult == 2 && levelIndex >= campaignLength - 1) {
+	} else if (runComplete()) {
 		btn(Y, "Restart", restartCampaign);
 		btn(N);
 	} else {
