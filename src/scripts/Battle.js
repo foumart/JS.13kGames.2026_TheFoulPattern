@@ -57,11 +57,11 @@ function clearRock(x, y) {
 	if (obstacles[y]) obstacles[y][x] = 0;
 }
 
-// portrait: enemies on y=0, heroes on y=H-2; landscape: heroes on x=1, enemies on x=W-1
+// portrait: enemies on y=0, heroes on y=H-2; landscape: heroes on x=1, enemies on x=W-2
 function battleEdge(ally) {
 	const w = boardWidth > boardHeight;
 	const m = (w ? boardHeight : boardWidth) / 2 | 0;
-	return w ? [ally ? 1 : boardWidth - 1, m, 0, 1] : [m, ally ? boardHeight - 2 : 0, 1, 0];
+	return w ? [ally ? 1 : boardWidth - 2, m, 0, 1] : [m - !!(ally && !(boardWidth & 1)), ally ? boardHeight - 2 : 0, 1, 0];
 }
 
 function spawnBattleParty() {
@@ -253,7 +253,7 @@ function spawnEnemies() {
 	let n = queue.length;
 	const spots = [];
 	for (let y = 0; y < (e[2] ? 3 : boardHeight); y++) {
-		for (let x = e[2] ? 0 : boardWidth - 3; x < boardWidth; x++) {
+		for (let x = e[2] ? 0 : boardWidth - 4; x < boardWidth - !e[2]; x++) {
 			if (getUnitAt(x, y) || hasObstacle(x, y)) continue;
 			spots.push([x, y]);
 		}

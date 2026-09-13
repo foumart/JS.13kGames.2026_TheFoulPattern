@@ -17,10 +17,10 @@ function getLevelData(stage) {
 }
 
 /*for (let stage = 0; stage < 63; stage++) {
-    const world = stage / 9 | 0, slot = stage % 9, battle = slot % 3 == 2;
-    let width = world ? 8 + world - (world > 3) + (slot > 1) + (slot > 5) : stage < 2 ? 6 : 7 + (stage > 6);
-    let height = world ? (world > 3 ? 10 : 8) - battle : stage < 6 ? 5 : 6 - battle;
-    console.log("level", stage + 1, ":", width, "x", height, (battle ? "-" : ""));
+    const world = stage / 9 | 0, slot = stage % 9;
+    let width = world ? 8 + world - (world > 3) - 3 * (world < 3) - (world > 4) + (slot > 1) + (slot > 5) : stage < 2 ? 6 : 7 + (stage > 6);
+    let height = world ? 6 + 2 * (world > 2) + (world > 3) : 5;
+    console.log("level", stage + 1, ":", width, "x", height, "short", Math.min(width, height), (slot % 3 == 2 ? "-" : ""));
     if (slot == 8) console.log("world", world + 1, "battle")
 }*/
 
@@ -30,11 +30,11 @@ function makeRandomLevel(stage) {
 	let width, height;
 	if (puzzleMode) {
 		width = Math.min(16, 6 + ((stage + 1) / 9 | 0));
-		height = Math.min(10, 5 + ((stage + 1) / 18 | 0));
+		height = Math.min(9, 5 + ((stage + 1) / 18 | 0));
 	} else {
-		const world = stage / 9 | 0, slot = stage % 9, battle = slot % 3 == 2;
-		width = world ? 8 + world - (world > 3) + (slot > 1) + (slot > 5) : stage < 2 ? 6 : 7 + (stage > 6);
-		height = world ? (world > 3 ? 10 : 8) - battle : stage < 6 ? 5 : 6 - battle;
+		const world = stage / 9 | 0, slot = stage % 9;
+		width = world ? 8 + world - (world > 3) - 3 * (world < 3) - (world > 4) + (slot > 1) + (slot > 5) : stage < 2 ? 6 : 7 + (stage > 6);
+		height = world ? 6 + 2 * (world > 2) + (world > 3) : 5;
 	}
 
 	if (menu == 1) {
@@ -47,7 +47,7 @@ function makeRandomLevel(stage) {
 			width = height;
 			height = swap;
 		}
-		portrait ? width = Math.min(10, width) : height = Math.min(10, height);
+		portrait ? width = Math.min(9, width) : height = Math.min(9, height);
 	}
 
 	const area = width * height;
